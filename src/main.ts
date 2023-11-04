@@ -183,23 +183,202 @@
 // // console.log(Corina.id)
 // // console.log(Sarah.id)
 
-class Bands {
-  private dataState: string[]
-  constructor() {
-    this.dataState = []
-  }
-  public get data(): string[] {
-    return this.dataState
-  }
-  public set data(value: string[]) {
-    if (!Array.isArray(value) || value.some((val) => typeof val !== "string"))
-      throw new Error("error")
-    this.dataState = value
-  }
+// class Bands {
+//   private dataState: string[]
+//   constructor() {
+//     this.dataState = []
+//   }
+//   public get data(): string[] {
+//     return this.dataState
+//   }
+//   public set data(value: string[]) {
+//     if (!Array.isArray(value) || value.some((val) => typeof val !== "string"))
+//       throw new Error("error")
+//     this.dataState = value
+//   }
+// }
+
+// const myBands = new Bands()
+// myBands.data = ["akro"]
+// // console.log(myBands.data)
+// // console.log(myBands.data)
+// // $ tsc -w
+
+// // Index Signatures
+// // interface TransactionObj {
+// //   readonly [index: string]: number
+// // }
+// interface TransactionObj {
+//   readonly [index: string]: number
+//   Pizza: number
+//   Books: number
+//   Job: number
+// }
+
+// const todaysTransactions: TransactionObj = {
+//   Pizza: 1,
+//   Books: 2,
+//   Job: 44,
+//   Dave: 12
+// }
+// // console.log(todaysTransactions.Pizza)
+// // console.log(todaysTransactions["Pizza"])
+// // const prop: string = "Pizza"
+// // console.log(todaysTransactions[prop])
+// // todaysTransactions.Pizza = 5
+
+// interface Student {
+//   // [key: string]: string | number | number[] | undefined
+//   name: string
+//   GPA: number
+//   classes?: number[]
+// }
+
+// const student: Student = {
+//   name: "Akro",
+//   GPA: 4.9,
+//   classes: [100, 200]
+// }
+
+// for (const key in student) {
+//   console.log(`${key} : ${student[key as keyof Student]} `)
+// }
+
+// Object.keys(student).map((key) =>
+//   // console.log(student[key as keyof typeof student])
+// )
+
+// const logStudentKey = (student: Student, key: keyof Student): void => {
+//   // console.log(`${key} : ${student[key]}`)
+// }
+
+// interface Incomes {
+//   [key: string]: number
+// }
+
+// type Streams = "salary" | "bonus" | "sidehustle"
+// type Incomes = Record<Streams, number | string>
+
+// const monthlyIncomes: Incomes = {
+//   salary: 100,
+//   bonus: 200,
+//   sidehustle: 300
+// }
+// for (const key in monthlyIncomes) {
+//   console.log(monthlyIncomes[key as keyof Incomes])
+// }
+//
+// Utility types
+// 1- Partial
+const updateAssignment = (
+  assign: Assignment,
+  propsToUpdate: Partial<Assignment>
+) => {
+  return { ...assign, ...propsToUpdate }
 }
 
-const myBands = new Bands()
-myBands.data = ["akro"]
-console.log(myBands.data)
-console.log(myBands.data)
-// $ tsc -w
+// console.log(
+//   updateAssignment(
+//     { studentId: "1", title: "do homework", grade: 4 },
+//     { studentId: "2", title: "FF", d: 1 }
+//   )
+// )
+
+// Required and Readonly
+const recordAssignment = (assign: Required<Assignment>): Assignment => {
+  return assign
+}
+
+const assignVerified: Readonly<Assignment> = {
+  studentId: "F12fXC",
+  title: "Go dar",
+  grade: 10
+}
+// assignVerified.grade = 11
+// Record
+
+const hexColorMap: Record<string, string> = {
+  red: "FF00",
+  green: "GG11",
+  blue: "TY123"
+}
+
+// type Students = "Sara" | "Kelly"
+// type LetterGrades = "A" | "B" | "C"
+// const finalGrades: Record<Students, LetterGrades> = {
+//   Sara: "A"
+// }
+
+// interface Grades {
+//   assign1: number
+//   assign2: number
+// }
+// const gradeData: Record<Students, Grades> = {
+//   Sara: { assign1: 1, assign2: 3 },
+//   Kelly: { assign1: 19, assign2: 20 }
+// }
+//  Pick and Omit
+interface Assignment {
+  studentId: string
+  title: string
+  grade: number
+  verified?: boolean
+}
+type AssignResult = Pick<Assignment, "studentId" | "grade">
+type AssignPreview = Omit<Assignment, "grade">
+
+const preview: AssignPreview = {
+  title: "dd",
+  studentId: "ff"
+}
+
+const score: AssignResult = {
+  studentId: "fff",
+  grade: 2
+}
+
+// Exclude and Extract
+type LetterGrades = "A" | "B" | "C"
+
+type adjustedGrade = Exclude<LetterGrades, "A">
+type highGrades = Extract<LetterGrades, "A" | "B">
+// Nonnullable
+type AllPossibleGrades = "Dave" | "Jhon" | null | undefined
+type NamesOnly = NonNullable<AllPossibleGrades>
+// ReturnType
+
+// type newAssign = { title: string; points: number }
+
+const createNewAssign = (title: string, points: number) => {
+  return { title, points }
+}
+
+type NewAssign = ReturnType<typeof createNewAssign>
+
+const tsAssign: NewAssign = createNewAssign("x", 10)
+
+// Parameters
+
+type AssignParams = Parameters<typeof createNewAssign>
+
+const assignArgs: AssignParams = ["dd", 20]
+
+const tsAssign2: NewAssign = createNewAssign(...assignArgs)
+
+// Awaited - helps us with the Return type of a Promise
+interface User {
+  id: number
+  name: string
+  username: string
+  email: string
+}
+
+const fetchUsers = async (): Promise<User[]> => {
+  const data = await fetch("http://jsonplaceholder.typicode.com/users")
+    .then((res) => res.json())
+    .catch((err) => {
+      if (err instanceof Error) console.log(err.message)
+    })
+  return data
+}
+type x = Awaited<ReturnType<typeof fetchUsers>>
